@@ -23,6 +23,64 @@ class LanguageHelper
     }
 
     /**
+     * Returns a list of all supported languages in the application translated into the users language
+     *
+     * Format:
+     * array('en' => 'English', 'ar' => 'Arabic', ... )
+     *
+     * @return array the translated languages list
+     */
+    static public function getTranslatedLanguageList()
+    {
+        return array(
+            'en'    => Yii::t('language', 'English'),
+            'ar'    => Yii::t('language', 'Arabic'),
+            'bg'    => Yii::t('language', 'Bulgarian'),
+            'ca'    => Yii::t('language', 'Catalan'),
+            'cs'    => Yii::t('language', 'Czech'),
+            'da'    => Yii::t('language', 'Danish'),
+            'de'    => Yii::t('language', 'German'),
+            'en_gb' => Yii::t('language', 'UK English'),
+            'en_us' => Yii::t('language', 'US English'),
+            'el'    => Yii::t('language', 'Greek'),
+            'es'    => Yii::t('language', 'Spanish'),
+            'fa'    => Yii::t('language', 'Persian'),
+            'fi'    => Yii::t('language', 'Finnish'),
+            'fil'   => Yii::t('language', 'Filipino'),
+            'fr'    => Yii::t('language', 'French'),
+            'he'    => Yii::t('language', 'Hebrew'),
+            'hi'    => Yii::t('language', 'Hindi'),
+            'hr'    => Yii::t('language', 'Croatian'),
+            'hu'    => Yii::t('language', 'Hungarian'),
+            'id'    => Yii::t('language', 'Indonesian'),
+            'it'    => Yii::t('language', 'Italian'),
+            'ja'    => Yii::t('language', 'Japanese'),
+            'ko'    => Yii::t('language', 'Korean'),
+            'lt'    => Yii::t('language', 'Lithuanian'),
+            'lv'    => Yii::t('language', 'Latvian'),
+            'nl'    => Yii::t('language', 'Dutch'),
+            'no'    => Yii::t('language', 'Norwegian'),
+            'pl'    => Yii::t('language', 'Polish'),
+            'pt'    => Yii::t('language', 'Portuguese'),
+            'pt_br' => Yii::t('language', 'Portuguese (Brasil)'),
+            'pt_pt' => Yii::t('language', 'Portuguese (Portugal)'),
+            'ro'    => Yii::t('language', 'Romanian'),
+            'ru'    => Yii::t('language', 'Russian'),
+            'sk'    => Yii::t('language', 'Slovak'),
+            'sl'    => Yii::t('language', 'Slovene'),
+            'sr'    => Yii::t('language', 'Serbian'),
+            'sv'    => Yii::t('language', 'Swedish'),
+            'th'    => Yii::t('language', 'Thai'),
+            'tr'    => Yii::t('language', 'Turkish'),
+            'uk'    => Yii::t('language', 'Ukrainian'),
+            'vi'    => Yii::t('language', 'Vietnamese'),
+            'zh'    => Yii::t('language', 'Chinese'),
+            'zh_cn' => Yii::t('language', 'Chinese (PRC)'),
+            'zh_tw' => Yii::t('language', 'Chinese (Taiwan & Hong Kong)'),
+        );
+    }
+
+    /**
      * Returns a list of all language directions in the application.
      *
      * Format:
