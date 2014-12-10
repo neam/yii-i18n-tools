@@ -149,4 +149,24 @@ class LanguageHelper
         }
         return $languages[$code];
     }
+
+    /**
+     * For translation progress tracking using qa-state
+     * @return array
+     */
+    static public function qaStateTranslateScenarios()
+    {
+        $scenarios = array();
+        foreach (static::getCodes() as $language) {
+            $scenarios[] = static::qaStateTranslateScenario($language);
+        }
+        return $scenarios;
+    }
+
+    static public function qaStateTranslateScenario($language)
+    {
+        return 'translate_into_' . $language;
+    }
+
+
 }
