@@ -22,7 +22,7 @@
         }
     ],
     "autoload": {
-        "classmap": ["components/", "helpers/"]
+        "classmap": ["components/", "helpers/", "traits/"]
     },
     "require": {
         "php": ">=5.4.0",
