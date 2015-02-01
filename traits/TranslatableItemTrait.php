@@ -1,6 +1,7 @@
 <?php
 
-trait TranslatableItemTrait {
+trait TranslatableItemTrait
+{
 
     /**
      * Enumerates all translatable and recursively translatable attributes
@@ -228,5 +229,4 @@ trait TranslatableItemTrait {
     }
 
 
-
-} 
+}
