@@ -38,6 +38,28 @@ trait TranslatableItemTrait
 
     }
 
+    public function getMultilingualRelations()
+    {
+
+        $multilingualRelations = array();
+
+        $behaviors = $this->behaviors();
+
+        if (isset($behaviors['i18n-columns'])) {
+            foreach ($behaviors['i18n-columns']['multilingualRelations'] as $multilingualRelation => $multilingualRelationAttribute) {
+                foreach (LanguageHelper::getLanguageList() as $code => $label) {
+                    if (!isset($multilingualRelations[$multilingualRelation])) {
+                        $multilingualRelations[$multilingualRelation] = [];
+                    }
+                    $multilingualRelations[$multilingualRelation][$code] = lcfirst(PhInflector::id2camel($multilingualRelationAttribute . "_" . $code, "_"));
+                }
+            }
+        }
+
+        return $multilingualRelations;
+
+    }
+
     /**
      * Enumerates all recursively translatable attributes
      * @return array
