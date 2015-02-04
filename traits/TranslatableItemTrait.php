@@ -117,12 +117,52 @@ trait TranslatableItemTrait
             // but that causes recursion as long as we use this method as part of the validation logic
             $valid = isset($this->$sourceLanguageContentAttribute) && !is_null($this->$sourceLanguageContentAttribute) && !(is_array($this->$sourceLanguageContentAttribute) && empty($this->$sourceLanguageContentAttribute));
             if ($valid) {
-                $currentlyTranslatableAttributes[] = $translationAttribute;
+                $currentlyTranslatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
             }
 
         }
 
         return $currentlyTranslatableAttributes;
+    }
+
+    /**
+     * @param $item
+     * @param $attributes
+     * @return bool
+     */
+    public function anyCurrentlyTranslatable($attributes)
+    {
+        $currentlyTranslatableAttributes = $this->getCurrentlyTranslatableAttributes();
+
+        $numTranslatableAttributes = count($attributes);
+        foreach ($attributes as $field) {
+            $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
+            if (!in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
+                $numTranslatableAttributes--;
+            }
+        }
+
+        return $numTranslatableAttributes > 0;
+    }
+
+    /**
+     * @param $item
+     * @param $attributes
+     * @return bool
+     */
+    public function anyTranslatable($attributes)
+    {
+        $translatableAttributes = $this->getTranslatableAttributes();
+
+        $numTranslatableAttributes = count($attributes);
+        foreach ($attributes as $field) {
+            $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
+            if (!in_array($sourceLanguageContentAttribute, array_keys($translatableAttributes))) {
+                $numTranslatableAttributes--;
+            }
+        }
+
+        return $numTranslatableAttributes > 0;
     }
 
     /**
@@ -157,8 +197,8 @@ trait TranslatableItemTrait
 
         $i18nRules = array();
 
-        foreach ($this->flowSteps() as $step => $fields) {
-            foreach ($fields as $field) {
+        foreach ($this->flowSteps() as $step => $attributes) {
+            foreach ($attributes as $field) {
                 $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
                 if (!in_array($sourceLanguageContentAttribute, $currentlyTranslatableAttributes)) {
                     continue;
@@ -213,7 +253,7 @@ trait TranslatableItemTrait
             $i18nRules[] = array('id', 'compare', 'compareValue' => -1, 'on' => 'translate_into_' . $language);
 
             /*
-            foreach ($this->flowSteps() as $step => $fields) {
+            foreach ($this->flowSteps() as $step => $attributes) {
                 $i18nRules[] = array($attribute, 'compare', 'compareValue' => -1, 'on' => "into_$language-step_$step");
             }
             */
@@ -238,8 +278,8 @@ trait TranslatableItemTrait
         foreach (LanguageHelper::getCodes() as $language) {
             $inlineValidatorI18nRules[] = array($attribute, $inlineValidator, 'on' => 'translate_into_' . $language);
 
-            foreach ($this->flowSteps() as $step => $fields) {
-                foreach ($fields as $field) {
+            foreach ($this->flowSteps() as $step => $attributes) {
+                foreach ($attributes as $field) {
                     if ($field == $attribute . '_' . $this->source_language) {
                         $inlineValidatorI18nRules[] = array($attribute, $inlineValidator, 'on' => "into_$language-step_$step");
                     }
