@@ -10,23 +10,7 @@ trait TranslatableItemTrait
     public function getTranslatableAttributes()
     {
 
-        $translatableAttributes = array();
-
-        $behaviors = $this->behaviors();
-
-        if (isset($behaviors['i18n-attribute-messages'])) {
-            foreach ($behaviors['i18n-attribute-messages']['translationAttributes'] as $translationAttribute) {
-                $sourceLanguageContentAttribute = "_" . $translationAttribute;
-                $translatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
-            }
-        }
-
-        if (isset($behaviors['i18n-columns'])) {
-            foreach ($behaviors['i18n-columns']['translationAttributes'] as $translationAttribute) {
-                $sourceLanguageContentAttribute = $translationAttribute . "_" . $this->source_language;
-                $translatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
-            }
-        }
+        $directlyTranslatableAttributes = $this->getDirectlyTranslatableAttributes();
 
         $recursivelyTranslatableAttributes = $this->getRecursivelyTranslatableAttributes();
         foreach ($recursivelyTranslatableAttributes as $translationAttribute => $validatorMethod) {
@@ -34,7 +18,34 @@ trait TranslatableItemTrait
             $translatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
         }
 
+        $translatableAttributes = array_merge($directlyTranslatableAttributes, $recursivelyTranslatableAttributes);
+
         return $translatableAttributes;
+
+    }
+
+    public function getDirectlyTranslatableAttributes()
+    {
+
+        $directlyTranslatableAttributes = array();
+
+        $behaviors = $this->behaviors();
+
+        if (isset($behaviors['i18n-attribute-messages'])) {
+            foreach ($behaviors['i18n-attribute-messages']['translationAttributes'] as $translationAttribute) {
+                $sourceLanguageContentAttribute = "_" . $translationAttribute;
+                $directlyTranslatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
+            }
+        }
+
+        if (isset($behaviors['i18n-columns'])) {
+            foreach ($behaviors['i18n-columns']['translationAttributes'] as $translationAttribute) {
+                $sourceLanguageContentAttribute = $translationAttribute . "_" . $this->source_language;
+                $directlyTranslatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
+            }
+        }
+
+        return $directlyTranslatableAttributes;
 
     }
 
@@ -184,9 +195,36 @@ trait TranslatableItemTrait
      * @param $attributes
      * @return array
      */
-    public function addSourceLanguageToTranslatable($attributes)
+    public function matchingDirectlyTranslatable($attributes)
     {
-        $translatableAttributes = $this->getTranslatableAttributes();
+        $translatableAttributes = $this->getDirectlyTranslatableAttributes();
+
+        $matching = array();
+
+        foreach ($attributes as $field) {
+            $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
+            if (in_array($sourceLanguageContentAttribute, array_keys($translatableAttributes))) {
+                $matching[$field] = $sourceLanguageContentAttribute;
+            }
+        }
+
+        return $matching;
+    }
+
+    public function anyDirectlyTranslatable($attributes)
+    {
+        $_ = $this->matchingDirectlyTranslatable($attributes);
+        return !empty($_);
+    }
+
+    /**
+     * @param $item
+     * @param $attributes
+     * @return array
+     */
+    public function addSourceLanguageToDirectlyTranslatable($attributes)
+    {
+        $translatableAttributes = $this->getDirectlyTranslatableAttributes();
 
         foreach ($attributes as $k => $attribute) {
             if (in_array($attribute, array_keys($translatableAttributes))) {
@@ -200,7 +238,7 @@ trait TranslatableItemTrait
     public function definitionArrayWithSourceLanguageAttributes($array)
     {
         foreach ($array as &$attributes) {
-            $attributes = $this->addSourceLanguageToTranslatable($attributes);
+            $attributes = $this->addSourceLanguageToDirectlyTranslatable($attributes);
         }
         return $array;
     }
