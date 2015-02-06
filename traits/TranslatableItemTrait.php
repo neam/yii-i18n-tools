@@ -214,7 +214,7 @@ trait TranslatableItemTrait
         foreach ($this->flowSteps() as $step => $attributes) {
             foreach ($attributes as $field) {
                 $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
-                if (!in_array($sourceLanguageContentAttribute, $currentlyTranslatableAttributes)) {
+                if (!in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
                     continue;
                 }
                 foreach (LanguageHelper::getCodes() as $lang) {
