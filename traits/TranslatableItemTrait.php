@@ -128,41 +128,55 @@ trait TranslatableItemTrait
     /**
      * @param $item
      * @param $attributes
-     * @return bool
+     * @return array
      */
-    public function anyCurrentlyTranslatable($attributes)
+    public function matchingCurrentlyTranslatable($attributes)
     {
         $currentlyTranslatableAttributes = $this->getCurrentlyTranslatableAttributes();
 
-        $numTranslatableAttributes = count($attributes);
+        $matching = array();
+
         foreach ($attributes as $field) {
             $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
-            if (!in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
-                $numTranslatableAttributes--;
+            if (in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
+                $matching[] = $field;
             }
         }
 
-        return $numTranslatableAttributes > 0;
+        return $matching;
+    }
+
+    public function anyCurrentlyTranslatable($attributes)
+    {
+        $_ = $this->matchingCurrentlyTranslatable($attributes);
+        return !empty($_);
     }
 
     /**
      * @param $item
      * @param $attributes
-     * @return bool
+     * @return array
      */
-    public function anyTranslatable($attributes)
+    public function matchingTranslatable($attributes)
     {
         $translatableAttributes = $this->getTranslatableAttributes();
 
-        $numTranslatableAttributes = count($attributes);
+        $matching = array();
+
         foreach ($attributes as $field) {
             $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
-            if (!in_array($sourceLanguageContentAttribute, array_keys($translatableAttributes))) {
-                $numTranslatableAttributes--;
+            if (in_array($sourceLanguageContentAttribute, array_keys($translatableAttributes))) {
+                $matching[$field] = $sourceLanguageContentAttribute;
             }
         }
 
-        return $numTranslatableAttributes > 0;
+        return $matching;
+    }
+
+    public function anyTranslatable($attributes)
+    {
+        $_ = $this->matchingTranslatable($attributes);
+        return !empty($_);
     }
 
     /**
