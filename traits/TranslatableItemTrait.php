@@ -62,12 +62,30 @@ trait TranslatableItemTrait
                     if (!isset($multilingualRelations[$multilingualRelation])) {
                         $multilingualRelations[$multilingualRelation] = [];
                     }
-                    $multilingualRelations[$multilingualRelation][$code] = lcfirst(PhInflector::id2camel($multilingualRelationAttribute . "_" . $code, "_"));
+                    $multilingualRelations[$multilingualRelation][$code] = [
+                        "attribute" => $multilingualRelationAttribute,
+                        "relationName" => lcfirst(PhInflector::id2camel($multilingualRelationAttribute . "_" . $code, "_")),
+                    ];
                 }
             }
         }
 
         return $multilingualRelations;
+
+    }
+
+    public function getSourceRelationNameByAttribute($searchAttribute, $searchLang)
+    {
+
+        $multilingualRelations = $this->getMultilingualRelations();
+
+        foreach ($multilingualRelations as $sourceRelationName => $multilingualRelation) {
+            if ($multilingualRelation[$searchLang]["attribute"] === $searchAttribute) {
+                return $sourceRelationName;
+            }
+        }
+
+        return null;
 
     }
 
