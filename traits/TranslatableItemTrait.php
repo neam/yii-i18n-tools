@@ -180,6 +180,32 @@ trait TranslatableItemTrait
     }
 
     /**
+     * @param $item
+     * @param $attributes
+     * @return array
+     */
+    public function addSourceLanguageToTranslatable($attributes)
+    {
+        $translatableAttributes = $this->getTranslatableAttributes();
+
+        foreach ($attributes as $k => $attribute) {
+            if (in_array($attribute, array_keys($translatableAttributes))) {
+                $attributes[$k] = $attribute . '_' . $this->source_language;
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function definitionArrayWithSourceLanguageAttributes($array)
+    {
+        foreach ($array as &$attributes) {
+            $attributes = $this->addSourceLanguageToTranslatable($attributes);
+        }
+        return $array;
+    }
+
+    /**
      * Translations are required if their source content counterpart is a string with some contents
      * @return array
      */
@@ -212,8 +238,7 @@ trait TranslatableItemTrait
         $i18nRules = array();
 
         foreach ($this->flowSteps() as $step => $attributes) {
-            foreach ($attributes as $field) {
-                $sourceLanguageContentAttribute = str_replace('_' . $this->source_language, '', $field);
+            foreach ($attributes as $sourceLanguageContentAttribute) {
                 if (!in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
                     continue;
                 }
