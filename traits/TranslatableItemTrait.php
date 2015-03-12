@@ -63,7 +63,7 @@ trait TranslatableItemTrait
                         $multilingualRelations[$multilingualRelation] = [];
                     }
                     $multilingualRelations[$multilingualRelation][$code] = [
-                        "attribute" => $multilingualRelationAttribute,
+                        "attribute" => $multilingualRelationAttribute . "_" . $code,
                         "relationName" => $this->getMultilingualRelationName($multilingualRelationAttribute, $code),
                     ];
                 }
@@ -79,33 +79,14 @@ trait TranslatableItemTrait
     }
 
 
-    public function getSourceRelationNameByAttribute($searchAttribute, $searchLang)
+    public function getAttributeBySourceRelationName($sourceRelationName, $lang)
     {
 
         $multilingualRelations = $this->getMultilingualRelations();
-
-        foreach ($multilingualRelations as $sourceRelationName => $multilingualRelation) {
-            if ($multilingualRelation[$searchLang]["attribute"] === $searchAttribute) {
-                return $sourceRelationName;
-            }
+        if (!isset($multilingualRelations[$sourceRelationName][$lang])) {
+            return null;
         }
-
-        return null;
-
-    }
-
-    public function getAttributeByMultilingualRelationName($searchRelationName, $lang)
-    {
-
-        $multilingualRelations = $this->getMultilingualRelations();
-
-        foreach ($multilingualRelations as $sourceRelationName => $multilingualRelation) {
-            if ($multilingualRelation[$lang]["relationName"] === $searchRelationName) {
-                return $multilingualRelation[$lang]["attribute"];
-            }
-        }
-
-        return null;
+        return $multilingualRelations[$sourceRelationName][$lang]["attribute"];
 
     }
 
