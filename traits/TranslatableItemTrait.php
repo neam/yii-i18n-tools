@@ -64,7 +64,7 @@ trait TranslatableItemTrait
                     }
                     $multilingualRelations[$multilingualRelation][$code] = [
                         "attribute" => $multilingualRelationAttribute,
-                        "relationName" => lcfirst(PhInflector::id2camel($multilingualRelationAttribute . "_" . $code, "_")),
+                        "relationName" => $this->getMultilingualRelationName($multilingualRelationAttribute, $code),
                     ];
                 }
             }
@@ -74,6 +74,11 @@ trait TranslatableItemTrait
 
     }
 
+    public function getMultilingualRelationName($attributeOrRelationName, $code) {
+        return lcfirst(PhInflector::id2camel($attributeOrRelationName . "_" . $code, "_"));
+    }
+
+
     public function getSourceRelationNameByAttribute($searchAttribute, $searchLang)
     {
 
@@ -82,6 +87,21 @@ trait TranslatableItemTrait
         foreach ($multilingualRelations as $sourceRelationName => $multilingualRelation) {
             if ($multilingualRelation[$searchLang]["attribute"] === $searchAttribute) {
                 return $sourceRelationName;
+            }
+        }
+
+        return null;
+
+    }
+
+    public function getAttributeByMultilingualRelationName($searchRelationName, $lang)
+    {
+
+        $multilingualRelations = $this->getMultilingualRelations();
+
+        foreach ($multilingualRelations as $sourceRelationName => $multilingualRelation) {
+            if ($multilingualRelation[$lang]["relationName"] === $searchRelationName) {
+                return $multilingualRelation[$lang]["attribute"];
             }
         }
 
