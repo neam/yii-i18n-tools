@@ -271,11 +271,14 @@ trait TranslatableItemTrait
 
         Yii::log(get_class($this) . "->i18nRules()", 'flow', __METHOD__);
 
+        // Work on a clone of the model so that related-cache does not get populated yet
+        $clone = clone $this;
+
         // Do nothing if there are no attributes to translate at any time for this model
-        $translatableAttributes = $this->getTranslatableAttributes();
+        $translatableAttributes = $clone->getTranslatableAttributes();
         //codecept_debug(compact("translatableAttributes"));
         if (empty($translatableAttributes)) {
-            return $this->zeroProgressI18nRules();
+            return $clone->zeroProgressI18nRules();
         }
 
         // Pick the first translatable attribute, if any
@@ -283,18 +286,18 @@ trait TranslatableItemTrait
         $attribute = array_shift($a);
 
         // Get the currently translatable attributes
-        $currentlyTranslatableAttributes = $this->getCurrentlyTranslatableAttributes();
+        $currentlyTranslatableAttributes = $clone->getCurrentlyTranslatableAttributes();
         //codecept_debug(compact("currentlyTranslatableAttributes"));
         Yii::log("\$currentlyTranslatableAttributes: " . print_r($currentlyTranslatableAttributes, true), 'qa-state', __METHOD__);
 
         // If there currently is nothing to translate, then the translation progress should equal 0%
         if (empty($currentlyTranslatableAttributes)) {
-            return $this->zeroProgressI18nRules();
+            return $clone->zeroProgressI18nRules();
         }
 
         $i18nRules = array();
 
-        foreach ($this->flowSteps() as $step => $attributes) {
+        foreach ($clone->flowSteps() as $step => $attributes) {
             foreach ($attributes as $sourceLanguageContentAttribute) {
                 if (!in_array($sourceLanguageContentAttribute, array_keys($currentlyTranslatableAttributes))) {
                     continue;
@@ -302,12 +305,12 @@ trait TranslatableItemTrait
                 foreach (LanguageHelper::getCodes() as $lang) {
 
                     // The following fields are not itself translated, but contains translated contents, they need some special attention
-                    $recursivelyTranslatableAttributes = $this->getRecursivelyTranslatableAttributes();
+                    $recursivelyTranslatableAttributes = $clone->getRecursivelyTranslatableAttributes();
 
                     if (in_array($sourceLanguageContentAttribute, array_keys($recursivelyTranslatableAttributes))) {
 
                         $validatorMethod = $recursivelyTranslatableAttributes[$sourceLanguageContentAttribute];
-                        $i18nRules = array_merge($i18nRules, $this->generateInlineValidatorI18nRules($sourceLanguageContentAttribute, $validatorMethod));
+                        $i18nRules = array_merge($i18nRules, $clone->generateInlineValidatorI18nRules($sourceLanguageContentAttribute, $validatorMethod));
 
                     } else {
 
