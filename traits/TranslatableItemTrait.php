@@ -44,8 +44,8 @@ trait TranslatableItemTrait
                 $directlyTranslatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
             }
             $multilingualRelations = $this->getMultilingualRelations();
-            foreach ($behaviors['i18n-columns']['multilingualRelations'] as $relation => $translationAttribute) {
-                $sourceLanguageContentAttribute = $multilingualRelations[$relation][$this->source_language]["relationName"];
+            foreach ($multilingualRelations as $relation => $relationInfo) {
+                $sourceLanguageContentAttribute = $relationInfo[$this->source_language]["relationName"];
                 $directlyTranslatableAttributes[$relation] = $sourceLanguageContentAttribute;
             }
         }
@@ -61,7 +61,7 @@ trait TranslatableItemTrait
 
         $behaviors = $this->behaviors();
 
-        if (isset($behaviors['i18n-columns'])) {
+        if (isset($behaviors['i18n-columns']['multilingualRelations'])) {
             foreach ($behaviors['i18n-columns']['multilingualRelations'] as $multilingualRelation => $multilingualRelationAttribute) {
                 foreach (LanguageHelper::getLanguageList() as $code => $label) {
                     if (!isset($multilingualRelations[$multilingualRelation])) {
