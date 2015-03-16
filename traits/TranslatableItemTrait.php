@@ -246,8 +246,8 @@ trait TranslatableItemTrait
         $translatableAttributes = $this->getDirectlyTranslatableAttributes();
 
         foreach ($attributes as $k => $attribute) {
-            if (in_array($attribute, array_keys($translatableAttributes))) {
-                $attributes[$k] = $attribute . '_' . $this->source_language;
+            if (isset($translatableAttributes[$attribute])) {
+                $attributes[$k] = $translatableAttributes[$attribute];
             }
         }
 
