@@ -43,11 +43,6 @@ trait TranslatableItemTrait
                 $sourceLanguageContentAttribute = $translationAttribute . "_" . $this->source_language;
                 $directlyTranslatableAttributes[$translationAttribute] = $sourceLanguageContentAttribute;
             }
-            $multilingualRelations = $this->getMultilingualRelations();
-            foreach ($multilingualRelations as $relation => $relationInfo) {
-                $sourceLanguageContentAttribute = $relationInfo[$this->source_language]["relationName"];
-                $directlyTranslatableAttributes[$relation] = $sourceLanguageContentAttribute;
-            }
         }
 
         return $directlyTranslatableAttributes;
@@ -250,9 +245,14 @@ trait TranslatableItemTrait
     {
         $translatableAttributes = $this->getDirectlyTranslatableAttributes();
 
+        $multilingualRelations = $this->getMultilingualRelations();
+
         foreach ($attributes as $k => $attribute) {
             if (isset($translatableAttributes[$attribute])) {
                 $attributes[$k] = $attribute . '_' . $this->source_language;
+            }
+            if (isset($multilingualRelations[$attribute])) {
+                $attributes[$k] = $multilingualRelations[$attribute][$this->source_language]["relationName"];
             }
         }
 
