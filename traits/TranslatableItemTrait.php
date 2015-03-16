@@ -252,7 +252,7 @@ trait TranslatableItemTrait
 
         foreach ($attributes as $k => $attribute) {
             if (isset($translatableAttributes[$attribute])) {
-                $attributes[$k] = $translatableAttributes[$attribute];
+                $attributes[$k] = $attribute . '_' . $this->source_language;
             }
         }
 
