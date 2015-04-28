@@ -3,6 +3,8 @@
 trait TranslatableItemTrait
 {
 
+    public $source_language;
+
     /**
      * Enumerates all translatable and recursively translatable attributes
      * @return array
