@@ -3,7 +3,8 @@
 trait TranslatableItemTrait
 {
 
-    public $source_language;
+    // Hard code source language to en for now. TODO: Be able to choose and store source language
+    public $source_language = 'en';
 
     /**
      * Enumerates all translatable and recursively translatable attributes
