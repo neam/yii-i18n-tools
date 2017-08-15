@@ -104,6 +104,9 @@ trait TranslatableItemTrait
 
         $recursivelyTranslatableAttributes = array();
 
+        // TODO: Remove this extension's use of DataModel class for configuration
+        return [];
+
         // The following fields are not itself translated, but contains translated contents, they need some special attention
         $i18nRecursivelyValidatedMap = DataModel::i18nRecursivelyValidated();
         if (isset($i18nRecursivelyValidatedMap['attributes'][get_class($this)])) {
